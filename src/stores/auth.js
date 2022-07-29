@@ -5,10 +5,14 @@ import Router from "@/router";
 export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
-    counter: 0,
+    hubSubscribed: false,
     userInfo: null,
   }),
   actions: {
+    setHubSubscribed() {
+      console.log("setting hub subscribed");
+      this.hubSubscribed = true;
+    },
     setUser(user) {
       this.userInfo = user;
       console.log("setUser", user);
@@ -70,6 +74,7 @@ export const useAuthStore = defineStore({
     },
   },
   getters: {
+    ifHubSubscribed: (state) => state.hubSubscribed,
     user: (state) => state.userInfo,
     userName: (state) =>
       state.userInfo && state.userInfo.username ? state.userInfo.username : "",

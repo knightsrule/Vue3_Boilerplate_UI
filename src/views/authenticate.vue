@@ -3,9 +3,17 @@ import { Authenticator } from "@aws-amplify/ui-vue";
 import "@aws-amplify/ui-vue/styles.css";
 import { Hub } from "aws-amplify";
 import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
 
-const { authAction, logout } = useAuthStore();
+const { hubSubscribed } = storeToRefs(useAuthStore());
 
+const { authAction, logout, setHubSubscribed } = useAuthStore();
+
+//VV: this following is not working as expected
+//if (!hubSubscribed) {
+//  console.log("hub status: ", hubSubscribed);
+
+//  setHubSubscribed(true);
 Hub.listen("auth", (data) => {
   switch (data.payload.event) {
     case "signIn":
@@ -22,6 +30,7 @@ Hub.listen("auth", (data) => {
       console.log("the Auth module is configured");
   }
 });
+//}
 </script>
 
 <template>
