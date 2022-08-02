@@ -1,14 +1,16 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import { Authenticator } from "@aws-amplify/ui-vue";
-import "@aws-amplify/ui-vue/styles.css";
+import { RouterView } from "vue-router";
 import navbar from "@/components/navbar.vue";
 import footerbar from "@/components/footerbar.vue";
-
 import { Amplify } from "aws-amplify";
 import awsconfig from "./aws-exports";
+import { useAuthStore } from "@/stores/auth";
+
+const { initialize } = useAuthStore();
 
 Amplify.configure(awsconfig);
+
+initialize();
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 import { Auth } from "aws-amplify";
 import { defineStore } from "pinia";
 import Router from "@/router";
+import { Hub } from "aws-amplify";
 
 export const useAuthStore = defineStore({
   id: "auth",
@@ -9,9 +10,32 @@ export const useAuthStore = defineStore({
     userInfo: null,
   }),
   actions: {
-    setHubSubscribed() {
+    initialize() {
       console.log("setting hub subscribed");
-      this.hubSubscribed = true;
+
+      if (!this.hubSubscribed) {
+        this.hubSubscribed = true;
+        Hub.listen("auth", (data) => {
+          switch (data.payload.event) {
+            case "signIn":
+            case "signOut":
+              this.authAction(data.payload.event);
+              break;
+            case "signUp":
+              console.log("user signed up");
+              break;
+            case "signIn_failure":
+              console.log("user sign in failed");
+              break;
+            case "configured":
+              console.log("the Auth module is configured");
+          }
+        });
+        //        this.authAction("signIn");
+        Auth.currentUserInfo().then((userInfo) => {
+          this.setUser(userInfo);
+        });
+      }
     },
     setUser(user) {
       this.userInfo = user;
